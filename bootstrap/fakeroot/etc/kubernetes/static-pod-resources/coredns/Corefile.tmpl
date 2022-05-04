@@ -1,0 +1,14 @@
+. {
+    errors
+    health :18080
+    mdns ocp01.telco.ocp.run {{.Cluster.MasterAmount}} {{.Cluster.Name}} {{.NonVirtualIP}}
+    forward . {{- range $upstream := .DNSUpstreams}} {{$upstream}}{{- end}} {
+        policy sequential
+    }
+    cache 30
+    reload
+    hosts /etc/coredns/api-int.hosts ocp01.telco.ocp.run {
+        172.21.104.25 api-int.ocp01.telco.ocp.run api.ocp01.telco.ocp.run
+        fallthrough
+    }
+}
